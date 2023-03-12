@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools.V107.Network;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
@@ -60,12 +61,13 @@ namespace HW11
          
             Assert.IsTrue(homeCheckbox.Displayed);
             
-            var arrowCheckbox = _driver.FindElement(By.XPath("//button[@title=\'Toggle\']"));
+            var arrowCheckbox = _driver.FindElement(By.XPath("//button[@title='Toggle']"));
 
             arrowCheckbox.Click(); //Expand Home
             By byDesktopCheckbox = By.XPath("//label[@for='tree-node-desktop']//span[@class='rct-checkbox']");
             By byDocumentsCheckbox = By.XPath("//label[@for='tree-node-documents']//span[@class='rct-checkbox']");
             By byDownloadsCheckbox = By.XPath("//label[@for='tree-node-downloads']//span[@class='rct-checkbox']");
+            By byHomeCheckbox = By.XPath("//input[@id='tree-node-home']/following-sibling::span[@class='rct-checkbox']");
             var desktopCheckbox = _driver.FindElement(byDesktopCheckbox);
             var documentsCheckbox = _driver.FindElement(byDocumentsCheckbox);
             var downloadsCheckbox = _driver.FindElement(byDownloadsCheckbox);
@@ -74,15 +76,15 @@ namespace HW11
             Assert.IsTrue(downloadsCheckbox.Displayed);
 
             arrowCheckbox.Click(); //close home checkbox
-            Assert.IsTrue(homeCheckbox.Displayed);
 
+            Assert.IsTrue(IsElementPresent(byHomeCheckbox));
             Assert.IsFalse(IsElementPresent(byDesktopCheckbox));
             Assert.IsFalse(IsElementPresent(byDocumentsCheckbox));
             Assert.IsFalse(IsElementPresent(byDownloadsCheckbox));
 
             homeCheckbox.Click();
 
-            IWebElement selectedText = _driver.FindElement(By.XPath("//*[@id=\'result\']"));
+            IWebElement selectedText = _driver.FindElement(By.XPath("//*[@id='result']"));
             string expectedResult = "You have selected : home desktop notes commands documents workspace react angular veu office public private classified general downloads wordFile excelFile";
             string textFromElement = selectedText.Text.Replace("\r\n", " ");
             Assert.AreEqual(expectedResult, textFromElement);
@@ -101,14 +103,14 @@ namespace HW11
             Assert.IsTrue(impressiveRadioButton.Enabled);
 
             yesRadioButton.Click();
-            var selectedYes = _driver.FindElement(By.XPath("//*[@id=\'yesRadio\']"));
+            var selectedYes = _driver.FindElement(By.XPath("//*[@id='yesRadio']"));
             Assert.IsTrue(selectedYes.Selected);
 
             var selectedYesResult = _driver.FindElement(By.CssSelector("[class='mt-3']")).Text;
             Assert.AreEqual("You have selected Yes", selectedYesResult);
 
             impressiveRadioButton.Click();
-            var selectedImpresive = _driver.FindElement(By.XPath("//*[@id=\'impressiveRadio\']"));
+            var selectedImpresive = _driver.FindElement(By.XPath("//*[@id='impressiveRadio']"));
             Assert.IsTrue(selectedImpresive.Selected);
             Assert.IsFalse(selectedYes.Selected);
 
@@ -132,14 +134,7 @@ namespace HW11
 
             var regForm = _driver.FindElement(By.Id("registration-form-modal"));
 
-            _driverWait.Until(drv =>
-                {
-                    if (drv.FindElements(By.Id("registration-form-modal")).Count > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                });
+            _driverWait.Until(drv => drv.FindElements(By.Id("registration-form-modal")).Count > 0);
 
             Assert.IsTrue(regForm.Displayed); // exp result 2
 
@@ -162,14 +157,7 @@ namespace HW11
 
             IWebElement firstNameFieldError = _driver.FindElement(By.XPath("//input[@id='firstName']"));
 
-            _driverWait.Until(drv =>
-            {
-                if (firstNameFieldError.GetCssValue("border-color").Contains("rgb(220, 53, 69)"))
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => firstNameFieldError.GetCssValue("border-color").Contains("rgb(220, 53, 69)"));
 
             string firstNameborderColor = firstNameFieldError.GetCssValue("border-color");
             Assert.AreEqual("rgb(220, 53, 69)", firstNameborderColor);
@@ -199,14 +187,7 @@ namespace HW11
             
             addButton.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.Id("registration-form-modal")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(By.Id("registration-form-modal")).Count > 0);
 
             _driver.FindElement(By.Id("firstName")).SendKeys("Adam");
             _driver.FindElement(By.Id("lastName")).SendKeys("Smith");
@@ -217,14 +198,8 @@ namespace HW11
             _driver.FindElement(By.Id("submit")).Click();
 
             IWebElement firstNameFieldSuccess = _driver.FindElement(By.XPath("//input[@id='firstName']"));
-            _driverWait.Until(drv =>
-            {
-                if (firstNameFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"))
-                {
-                    return true;
-                }
-                return false;
-            });
+
+            _driverWait.Until(drv => firstNameFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"));
 
             string firstNameborderColorSuccess = firstNameFieldSuccess.GetCssValue("border-color");
             Assert.AreEqual("rgb(40, 167, 69)", firstNameborderColorSuccess);
@@ -252,14 +227,8 @@ namespace HW11
             _driver.FindElement(By.Id("age")).SendKeys("-2");
 
             IWebElement emailFieldSuccess = _driver.FindElement(By.XPath("//input[@id='userEmail']"));
-            _driverWait.Until(drv =>
-            {
-                if (emailFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"))
-                {
-                    return true;
-                }
-                return false;
-            });
+
+            _driverWait.Until(drv => emailFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"));
 
             string emailborderColorSuccess = emailFieldSuccess.GetCssValue("border-color");
             Assert.AreEqual("rgb(40, 167, 69)", emailborderColorSuccess);
@@ -288,11 +257,11 @@ namespace HW11
             _driverActions.SendKeys(Keys.PageDown).Perform();
 
             IWebElement homeLink = _driver.FindElement(By.Id("simpleLink"));
-            IWebElement homehZvluLink = _driver.FindElement(By.XPath("//*[@id=\'dynamicLink\']"));
+            IWebElement homehZvluLink = _driver.FindElement(By.XPath("//*[@id='dynamicLink']"));
             IWebElement createdLink = _driver.FindElement(By.Id("created"));
             IWebElement noContentLink = _driver.FindElement(By.Id("no-content"));
             IWebElement  movedLink = _driver.FindElement(By.Id("moved"));
-            IWebElement badRequestLink = _driver.FindElement(By.XPath("//*[@id=\'bad-request\']"));
+            IWebElement badRequestLink = _driver.FindElement(By.XPath("//*[@id='bad-request']"));
             IWebElement unauthorizedLink = _driver.FindElement(By.Id("unauthorized"));
             IWebElement forbiddenLink = _driver.FindElement(By.Id("forbidden"));
             IWebElement notFoundLink = _driver.FindElement(By.Id("invalid-url"));
@@ -310,132 +279,85 @@ namespace HW11
             homeLink.Click();
             IReadOnlyCollection<string> windowHandles = _driver.WindowHandles;
             _driver.SwitchTo().Window(windowHandles.Last());
-            Assert.AreEqual("https://demoqa.com/", _driver.Url);
+            
+            const string demoQaUrl = "https://demoqa.com/";
+            Assert.AreEqual(demoQaUrl, _driver.Url);
 
             _driver.SwitchTo().Window(windowHandles.First());
 
             homehZvluLink.Click();
             windowHandles = _driver.WindowHandles;
             _driver.SwitchTo().Window(windowHandles.Last());
-            Assert.AreEqual("https://demoqa.com/", _driver.Url);
+            Assert.AreEqual(demoQaUrl, _driver.Url);
 
             _driver.SwitchTo().Window(windowHandles.First());
 
             createdLink.Click();
 
-            _driverWait.Until(drv =>
-                   {
-                       if (drv.FindElements(By.XPath("//*[@id=\'linkResponse\']")).Count > 0)
-                       {
-                           return true;
-                       }
-                       return false;
-                   });
-
-            var createdLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='201']"));
-            var createdLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Created']"));
+            _driverWait.Until(drv => drv.FindElements(By.XPath("//*[@id='linkResponse']")).Count > 0);
             
+            var createdLinkStatusCode = _driver.FindElement(LocatorByXPath("201"));
+            var createdLinkStatusText = _driver.FindElement(LocatorByXPath("Created"));
+
             Assert.AreEqual("201", createdLinkStatusCode.Text);
             Assert.AreEqual("Created", createdLinkStatusText.Text);
 
             noContentLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='204']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("204")).Count > 0);
 
-            var noContentLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='204']"));
-            var noContentLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='No Content']"));
-            
+            var noContentLinkStatusCode = _driver.FindElement(LocatorByXPath("204"));
+            var noContentLinkStatusText = _driver.FindElement(LocatorByXPath("No Content"));
+
             Assert.AreEqual("204", noContentLinkStatusCode.Text);
             Assert.AreEqual("No Content", noContentLinkStatusText.Text);
 
             movedLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='301']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("301")).Count > 0);
 
-            var movedLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='301']"));
-            var movedLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Moved Permanently']"));
+            var movedLinkStatusCode = _driver.FindElement(LocatorByXPath("301"));
+            var movedLinkStatusText = _driver.FindElement(LocatorByXPath("Moved Permanently")); 
 
             Assert.AreEqual("301", movedLinkStatusCode.Text);
             Assert.AreEqual("Moved Permanently", movedLinkStatusText.Text);
 
             badRequestLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='400']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("400")).Count > 0);
 
-            var badRequestLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='400']"));
-            var badRequestLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Bad Request']"));
+            var badRequestLinkStatusCode = _driver.FindElement(LocatorByXPath("400"));
+            var badRequestLinkStatusText = _driver.FindElement(LocatorByXPath("Bad Request"));
 
             Assert.AreEqual("400", badRequestLinkStatusCode.Text);
             Assert.AreEqual("Bad Request", badRequestLinkStatusText.Text);
 
             unauthorizedLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='401']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("401")).Count > 0);
 
-            var unauthorizedLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='401']"));
-            var unauthorizedLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Unauthorized']"));
+            var unauthorizedLinkStatusCode = _driver.FindElement(LocatorByXPath("401"));
+            var unauthorizedLinkStatusText = _driver.FindElement(LocatorByXPath("Unauthorized"));
 
             Assert.AreEqual("401", unauthorizedLinkStatusCode.Text);
             Assert.AreEqual("Unauthorized", unauthorizedLinkStatusText.Text);
 
             forbiddenLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='403']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("403")).Count > 0);
 
-            var forbiddenLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='403']"));
-            var forbiddenLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Forbidden']"));
+            var forbiddenLinkStatusCode = _driver.FindElement(LocatorByXPath("403"));
+            var forbiddenLinkStatusText = _driver.FindElement(LocatorByXPath("Forbidden"));
 
             Assert.AreEqual("403", forbiddenLinkStatusCode.Text);
             Assert.AreEqual("Forbidden", forbiddenLinkStatusText.Text);
 
             notFoundLink.Click();
 
-            _driverWait.Until(drv =>
-            {
-                if (drv.FindElements(By.XPath("//p[@id='linkResponse']/b[.='404']")).Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            });
+            _driverWait.Until(drv => drv.FindElements(LocatorByXPath("404")).Count > 0);
 
-            var notFoundLinkStatusCode = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='404']"));
-            var notFoundLinkStatusText = _driver.FindElement(By.XPath("//p[@id='linkResponse']/b[.='Not Found']"));
+            var notFoundLinkStatusCode = _driver.FindElement(LocatorByXPath("404"));
+            var notFoundLinkStatusText = _driver.FindElement(LocatorByXPath("Not Found"));
 
             Assert.AreEqual("404", notFoundLinkStatusCode.Text);
             Assert.AreEqual("Not Found", notFoundLinkStatusText.Text);
@@ -452,6 +374,11 @@ namespace HW11
             {
                 return false;
             }
+        }
+
+        public static By LocatorByXPath(string text)
+        {
+            return By.XPath($"//*[@id='linkResponse']/b[.='{text}']");
         }
 
         [OneTimeTearDown]
