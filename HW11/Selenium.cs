@@ -122,7 +122,8 @@ namespace HW11
         public void WebTables()
         {
             _driver.Navigate().GoToUrl("https://demoqa.com/webtables");
-            var table = _driver.FindElement(By.XPath("//div[@class='ReactTable -striped -highlight']"));
+
+            var table = _driver.FindElement(By.XPath("//*[contains(@class, 'ReactTable')]"));
             var searchBox = _driver.FindElement(By.Id("searchBox"));
             var addButton = _driver.FindElement(By.Id("addNewRecordButton"));
 
@@ -134,7 +135,7 @@ namespace HW11
 
             var regForm = _driver.FindElement(By.Id("registration-form-modal"));
 
-            _driverWait.Until(drv => drv.FindElements(By.Id("registration-form-modal")).Count > 0);
+            WaitUntilDisplayed(regForm);
 
             Assert.IsTrue(regForm.Displayed); // exp result 2
 
@@ -187,7 +188,7 @@ namespace HW11
             
             addButton.Click();
 
-            _driverWait.Until(drv => drv.FindElements(By.Id("registration-form-modal")).Count > 0);
+           _driverWait.Until(drv => drv.FindElements(By.Id("registration-form-modal")).Count > 0);
 
             _driver.FindElement(By.Id("firstName")).SendKeys("Adam");
             _driver.FindElement(By.Id("lastName")).SendKeys("Smith");
@@ -379,6 +380,12 @@ namespace HW11
         public static By LocatorByXPath(string text)
         {
             return By.XPath($"//*[@id='linkResponse']/b[.='{text}']");
+        }
+
+        private void WaitUntilDisplayed(IWebElement element)
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(100));
+            wait.Until(driver => element.Displayed);
         }
 
         [OneTimeTearDown]
