@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V107.Network;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
@@ -123,6 +122,8 @@ namespace HW11
         {
             _driver.Navigate().GoToUrl("https://demoqa.com/webtables");
 
+            const string Error_Border_Color = "rgb(220, 53, 69)";
+            const string Success_Border_Color = "rgb(40, 167, 69)";
             var table = _driver.FindElement(By.XPath("//*[contains(@class, 'ReactTable')]"));
             var searchBox = _driver.FindElement(By.Id("searchBox"));
             var addButton = _driver.FindElement(By.Id("addNewRecordButton"));
@@ -158,30 +159,30 @@ namespace HW11
 
             IWebElement firstNameFieldError = _driver.FindElement(By.XPath("//input[@id='firstName']"));
 
-            _driverWait.Until(drv => firstNameFieldError.GetCssValue("border-color").Contains("rgb(220, 53, 69)"));
+            _driverWait.Until(drv => firstNameFieldError.GetCssValue("border-color").Contains(Error_Border_Color));
 
             string firstNameborderColor = firstNameFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", firstNameborderColor);
+            Assert.AreEqual(Error_Border_Color, firstNameborderColor);
 
             IWebElement lastNameFieldError = _driver.FindElement(By.XPath("//input[@id='lastName']"));
             string lastNameborderColor = lastNameFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", lastNameborderColor);
+            Assert.AreEqual(Error_Border_Color, lastNameborderColor);
 
             IWebElement emailFieldError = _driver.FindElement(By.XPath("//input[@id='userEmail']"));
             string emailborderColor = emailFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", emailborderColor);
+            Assert.AreEqual(Error_Border_Color, emailborderColor);
 
             IWebElement ageFieldError = _driver.FindElement(By.XPath("//input[@id='age']"));
             string ageborderColor = ageFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", ageborderColor);
+            Assert.AreEqual(Error_Border_Color, ageborderColor);
 
             IWebElement salaryFieldError = _driver.FindElement(By.XPath("//input[@id='salary']"));
             string salaryborderColor = salaryFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", salaryborderColor);
+            Assert.AreEqual(Error_Border_Color, salaryborderColor);
 
             IWebElement departmentFieldError = _driver.FindElement(By.XPath("//input[@id='department']"));
             string departmentborderColor = departmentFieldError.GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", departmentborderColor);
+            Assert.AreEqual(Error_Border_Color, departmentborderColor);
 
             var closeButton = _driver.FindElement(By.XPath("//button[@class='close']"));
             closeButton.Click();
@@ -200,42 +201,42 @@ namespace HW11
 
             IWebElement firstNameFieldSuccess = _driver.FindElement(By.XPath("//input[@id='firstName']"));
 
-            _driverWait.Until(drv => firstNameFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"));
+            _driverWait.Until(drv => firstNameFieldSuccess.GetCssValue("border-color").Contains(Success_Border_Color));
 
             string firstNameborderColorSuccess = firstNameFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", firstNameborderColorSuccess);
+            Assert.AreEqual(Success_Border_Color, firstNameborderColorSuccess);
 
             IWebElement lastNameFieldSuccess = _driver.FindElement(By.XPath("//input[@id='lastName']"));
             string lastNameborderSuccess = lastNameFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", lastNameborderSuccess);
+            Assert.AreEqual(Success_Border_Color, lastNameborderSuccess);
 
             _driver.FindElement(By.XPath("//input[@id='userEmail']")).GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", emailborderColor);
+            Assert.AreEqual(Error_Border_Color, emailborderColor);
 
             IWebElement ageFieldSuccess = _driver.FindElement(By.XPath("//input[@id='age']"));
             string ageborderColorSuccess = ageFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", ageborderColorSuccess);
+            Assert.AreEqual(Success_Border_Color, ageborderColorSuccess);
 
             IWebElement salaryFieldSuccess = _driver.FindElement(By.XPath("//input[@id='salary']"));
             string salaryborderColorSuccess = salaryFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", salaryborderColorSuccess);
+            Assert.AreEqual(Success_Border_Color, salaryborderColorSuccess);
 
             IWebElement departmentFieldSuccess = _driver.FindElement(By.XPath("//input[@id='department']"));
             string departmentborderColorSuccess = departmentFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", departmentborderColorSuccess);
+            Assert.AreEqual(Success_Border_Color, departmentborderColorSuccess);
 
             _driver.FindElement(By.Id("userEmail")).SendKeys("test@test.com");
             _driver.FindElement(By.Id("age")).SendKeys("-2");
 
             IWebElement emailFieldSuccess = _driver.FindElement(By.XPath("//input[@id='userEmail']"));
 
-            _driverWait.Until(drv => emailFieldSuccess.GetCssValue("border-color").Contains("rgb(40, 167, 69)"));
+            _driverWait.Until(drv => emailFieldSuccess.GetCssValue("border-color").Contains(Success_Border_Color));
 
             string emailborderColorSuccess = emailFieldSuccess.GetCssValue("border-color");
-            Assert.AreEqual("rgb(40, 167, 69)", emailborderColorSuccess);
+            Assert.AreEqual(Success_Border_Color, emailborderColorSuccess);
 
             _driver.FindElement(By.XPath("//input[@id='age']")).GetCssValue("border-color");
-            Assert.AreEqual("rgb(220, 53, 69)", emailborderColor);
+            Assert.AreEqual(Error_Border_Color, emailborderColor);
 
             _driver.FindElement(By.Id("age")).SendKeys("29");
             _driver.FindElement(By.Id("submit")).Click();
